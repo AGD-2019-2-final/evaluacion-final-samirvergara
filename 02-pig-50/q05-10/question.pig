@@ -8,7 +8,24 @@
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
 fs -rm -f -r output;
---
--- >>> Escriba su respuesta a partir de este punto <<<
---
+
+data = LOAD 'data.tsv' USING PigStorage('\t') 
+    AS (letra:CHARARRAY, 
+        lista_letras:BAG{t: tuple(a:CHARARRAY)},
+        clave_valor:MAP[]);
+DUMP data;
+
+    lista_letras = FOREACH data GENERATE lista_letras;
+    DUMP lista_letras;
+
+letras = FOREACH lista_letras GENERATE FLATTEN(lista_letras) AS letra;
+DUMP letras;
+
+grouped = GROUP letras BY letra;
+DUMP grouped;
+
+letracount = FOREACH grouped GENERATE group, COUNT(letras);
+DUMP letracount;
+
+STORE letracount INTO 'output' using PigStorage('\t');
 
