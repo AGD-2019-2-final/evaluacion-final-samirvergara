@@ -21,6 +21,7 @@ FIELDS TERMINATED BY ','
 COLLECTION ITEMS TERMINATED BY ':'
 MAP KEYS TERMINATED BY '#'
 LINES TERMINATED BY '\n';
+
 LOAD DATA LOCAL INPATH 'tbl0.csv' INTO TABLE tbl0;
 --
 DROP TABLE IF EXISTS tbl1;
@@ -35,8 +36,34 @@ FIELDS TERMINATED BY ','
 COLLECTION ITEMS TERMINATED BY ':'
 MAP KEYS TERMINATED BY '#'
 LINES TERMINATED BY '\n';
+
 LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+CREATE TABLE resultado
+AS
+    SELECT DISTINCT c5 
+    FROM (
+        SELECT
+            c1,
+            c5
+        FROM
+            tbl0
+        LATERAL VIEW
+            explode(c5) tbl0 AS c5
+        ) t0
+    ORDER BY c5
+;
+
+!hdfs dfs -rm -r -f /output;
+
+INSERT OVERWRITE DIRECTORY '/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    *
+FROM
+    resultado;
+
+!hdfs dfs -copyToLocal /output  output;
