@@ -26,3 +26,14 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+surname_size = FOREACH u GENERATE surname,SIZE(surname) ;
+-- DUMP surname_size;
+
+surname_size_order = ORDER surname_size BY $1 DESC, $0;
+--DUMP surname_size_order;
+
+surname_size_order_in_five = LIMIT surname_size_order 5;
+-- DUMP surname_size_order_in_five;
+
+STORE surname_size_order_in_five INTO 'output' using PigStorage(',');

@@ -28,3 +28,13 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data_select = FOREACH u GENERATE color, SUBSTRING(color,0,1) as first_letter;
+-- DUMP data_select;
+
+filter_data = FILTER data_select BY first_letter == 'b';
+-- DUMP filter_data;
+
+filter_data_select =  FOREACH filter_data GENERATE color;
+--DUMP filter_data_select;
+
+STORE filter_data_select INTO 'output';
