@@ -15,8 +15,8 @@ data = LOAD 'data.tsv' USING PigStorage('\t')
         clave_valor:MAP[]);
 DUMP data;
 
-    lista_letras = FOREACH data GENERATE lista_letras;
-    DUMP lista_letras;
+lista_letras = FOREACH data GENERATE lista_letras;
+DUMP lista_letras;
 
 letras = FOREACH lista_letras GENERATE FLATTEN(lista_letras) AS letra;
 DUMP letras;
