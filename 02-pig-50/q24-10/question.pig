@@ -26,3 +26,7 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+data_select = FOREACH u GENERATE SUBSTRING(birthday,5,7);
+-- DUMP data_select;
+
+STORE data_select INTO 'output';

@@ -29,10 +29,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
-data_select = FOREACH u GENERATE color, firstname, SUBSTRING(firstname,0,1) as first_letter;
+data_select = FOREACH u GENERATE color, firstname, ENDSWITH ( color, 'n' );
 -- DUMP data_select;
 
-filter_data = FILTER data_select BY color == 'green';
+filter_data = FILTER data_select BY $2 == true;
 -- DUMP filter_data;
 
 filter_data_select =  FOREACH filter_data GENERATE firstname, color;
