@@ -50,4 +50,27 @@ todate_data_format = FOREACH todate_data GENERATE $0, SUBSTRING($0,8,10) AS DD, 
 todate_data_to_print = FOREACH todate_data_format GENERATE $0,$1,$2,LOWER($3),LOWER($4);
 -- DUMP todate_data_to_print;
 
-STORE todate_data_to_print INTO 'output' using PigStorage(',');
+todate_data_to_print_spa = FOREACH todate_data_to_print GENERATE $0,$1,$2,
+                            CASE $3
+                            WHEN 'mon' THEN 'lun'
+                            WHEN 'tue' THEN 'mar'
+                            WHEN 'wed' THEN 'mie'
+                            WHEN 'thu' THEN 'jue'
+                            WHEN 'fri' THEN 'vie'
+                            WHEN 'sat' THEN 'sab'
+                            ELSE 'dom'
+                            END,
+                            CASE $3
+                            WHEN 'mon' THEN 'lunes'
+                            WHEN 'tue' THEN 'martes'
+                            WHEN 'wed' THEN 'miercoles'
+                            WHEN 'thu' THEN 'jueves'
+                            WHEN 'fri' THEN 'viernes'
+                            WHEN 'sat' THEN 'sabado'
+                            ELSE 'domingo'
+                            END;
+-- DUMP todate_data_to_print_spa;
+
+STORE todate_data_to_print_spa INTO 'output' using PigStorage(',');
+
+

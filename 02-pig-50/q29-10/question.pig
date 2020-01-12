@@ -50,5 +50,22 @@ todate_data_format = FOREACH todate_data GENERATE $0, ToString($1,'dd/MMM/yyyy')
 todate_data_to_print = FOREACH todate_data_format GENERATE $0,LOWER(SUBSTRING($1,3,6)),$2,$3;
 -- DUMP todate_data_to_print;
 
-STORE todate_data_to_print INTO 'output' using PigStorage(',');
+todate_data_to_print_spa = FOREACH todate_data_to_print GENERATE $0, 
+                            CASE $3
+                            WHEN 1 THEN 'ene'
+                            WHEN 2 THEN 'feb'
+                            WHEN 3 THEN 'mar'
+                            WHEN 4 THEN 'abr'
+                            WHEN 5 THEN 'may'
+                            WHEN 6 THEN 'jun'
+                            WHEN 7 THEN 'jul'
+                            WHEN 8 THEN 'ago'
+                            WHEN 9 THEN 'sep'
+                            WHEN 10 THEN 'oct'
+                            WHEN 11 THEN 'nov'
+                            ELSE 'dic'
+                            END, $2, $3;
+-- DUMP todate_data_to_print_spa;
+
+STORE todate_data_to_print_spa INTO 'output' using PigStorage(',');
 
