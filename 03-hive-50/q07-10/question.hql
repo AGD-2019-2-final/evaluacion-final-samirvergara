@@ -21,6 +21,7 @@ FIELDS TERMINATED BY ','
 COLLECTION ITEMS TERMINATED BY ':'
 MAP KEYS TERMINATED BY '#'
 LINES TERMINATED BY '\n';
+
 LOAD DATA LOCAL INPATH 'tbl0.csv' INTO TABLE tbl0;
 --
 DROP TABLE IF EXISTS tbl1;
@@ -39,5 +40,24 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE resultado;
 
+CREATE TABLE resultado
+AS
+    SELECT
+        c2, concat_ws(':',COLLECT_LIST(cast(c1 as STRING))) c1
+        FROM
+        tbl0
+        GROUP BY c2;
+;
 
+!hdfs dfs -rm -r -f /output;
+
+INSERT OVERWRITE DIRECTORY '/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    *
+FROM
+    resultado;
+
+!hdfs dfs -copyToLocal /output  output;

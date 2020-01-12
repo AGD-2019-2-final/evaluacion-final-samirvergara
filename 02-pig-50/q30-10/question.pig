@@ -41,3 +41,13 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+todate_data = FOREACH u GENERATE birthday, ToDate(birthday,'yyyy-MM-dd') AS birthday_date;
+-- DUMP todate_data;
+
+todate_data_format = FOREACH todate_data GENERATE $0, SUBSTRING($0,8,10) AS DD,  GetDay($1) AS D, ToString(ToDate(birthday,'yyyy-MM-dd'), 'EEE') AS date_format_EEE,ToString(ToDate(birthday,'yyyy-MM-dd'), 'EEEE') AS date_format_EEEE;
+-- DUMP todate_data_format; 
+
+todate_data_to_print = FOREACH todate_data_format GENERATE $0,$1,$2,LOWER($3),LOWER($4);
+-- DUMP todate_data_to_print;
+
+STORE todate_data_to_print INTO 'output' using PigStorage(',');

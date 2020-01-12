@@ -48,7 +48,7 @@ DROP TABLE resultado;
 
 CREATE TABLE resultado
 AS
-    SELECT c5
+    SELECT split(concat_ws(':',c5),',')
     FROM(
         SELECT
             c1, COLLECT_LIST(UPPER(c5)) c5
@@ -58,8 +58,6 @@ AS
         ) t0
 ;
 
-!hdfs dfs -rm -r -f /output;
-
 INSERT OVERWRITE DIRECTORY '/output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 SELECT
@@ -68,4 +66,3 @@ FROM
     resultado;
 
 !hdfs dfs -copyToLocal /output  output;
-

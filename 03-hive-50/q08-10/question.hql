@@ -22,6 +22,7 @@ FIELDS TERMINATED BY ','
 COLLECTION ITEMS TERMINATED BY ':'
 MAP KEYS TERMINATED BY '#'
 LINES TERMINATED BY '\n';
+
 LOAD DATA LOCAL INPATH 'tbl0.csv' INTO TABLE tbl0;
 --
 DROP TABLE IF EXISTS tbl1;
@@ -41,4 +42,21 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE resultado;
 
+CREATE TABLE resultado
+AS
+        SELECT
+            c2, sum(c6_2)
+            FROM
+            tbl0 LATERAL VIEW explode(c6) tbl0 AS c6_1, c6_2
+            GROUP BY c2;
+
+INSERT OVERWRITE DIRECTORY '/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    *
+FROM
+    resultado;
+
+!hdfs dfs -copyToLocal /output  output;

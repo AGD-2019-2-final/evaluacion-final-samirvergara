@@ -40,3 +40,15 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+todate_data = FOREACH u GENERATE birthday, ToDate(birthday,'yyyy-MM-dd') AS birthday_date;
+-- DUMP todate_data;
+
+todate_data_format = FOREACH todate_data GENERATE $0, ToString($1,'dd/MMM/yyyy') AS date_format_mmm, SUBSTRING($0,5,7) AS MM,  GetMonth($1) AS MMM;
+-- DUMP todate_data_format;
+
+todate_data_to_print = FOREACH todate_data_format GENERATE $0,LOWER(SUBSTRING($1,3,6)),$2,$3;
+-- DUMP todate_data_to_print;
+
+STORE todate_data_to_print INTO 'output' using PigStorage(',');
+

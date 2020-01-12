@@ -30,3 +30,13 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+todate_data = FOREACH u GENERATE ToDate(birthday,'yyyy-MM-dd') AS birthday_date;
+-- DUMP todate_data;
+
+todate_data_select = FOREACH todate_data GENERATE GetYear(birthday_date) AS ANHO;
+-- DUMP todate_data_select;
+
+format_year_yy = FOREACH todate_data_select GENERATE ANHO, SUBSTRING((chararray)ANHO,2,4) AS YY;
+-- DUMP format_year_yy;
+
+STORE format_year_yy INTO 'output' using PigStorage(',');
