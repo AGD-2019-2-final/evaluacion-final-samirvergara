@@ -1,11 +1,3 @@
-.DS_Store
-_SUCCESS
-*.log
-output/*
-part-*
-.*
-0000*
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
